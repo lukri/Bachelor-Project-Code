@@ -1,2 +1,2 @@
-# Bachelor-Project-Code
+# Bachelor Project Code
 Code of the Bachelor Project

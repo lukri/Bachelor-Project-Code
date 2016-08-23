@@ -1,25 +1,44 @@
 <!DOCTYPE html>
-<html>
-<body>
 
-<h1>Bachelor Project Code / WebGL</h1>
+<style>
+    #controls{
+        font-size:40px;
+    }
+    #controls button {
+        padding:20px;
+        font-size:40px;
+    }
+</style>
 
-demo: <a href="javascript:openSubLink('setup-v1.demo/index.html')">webGL</a><br>
+<h1>Setup version Demo</h1>
 
+Control animation
 
+<div id="infobox"></div>
+<div id="controls"></div>
+<br>
 
+<script src="js/three.min.js"></script>
+<script src="js/loaders/OBJLoader.js"></script>
+
+<script src="js/creatscene.js"></script>
+<script src="js/animation.js"></script>
 
 <script>
-    //important to open link also with http://htmlpreview.github.io/
-    function openSubLink(subLink){
-        var url=window.location+"";
-        var mobileUrl = url.replace("/index.html", "/"+subLink);
-        window.location = mobileUrl;
-        return false;
+    function addInfo(info){
+        //document.getElementById("infobox").innerHTML += "<br>"+info;
     }
+    
+    init();
+    animate();
+    
+    
+    
 </script>
+
+
+
 
 
 </body>
 </html>
-

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<!-- include three.js -->
+
+
+
+<script src='../Testing/threex.webar-master/examples/vendor/three.js/build/three.js'></script>
+<script src='../Testing/threex.webar-master/examples/vendor/three.js/examples/js/libs/stats.min.js'></script>
+
+<!-- include js-aruco -->
+<script src='../Testing/threex.webar-master/vendor/js-aruco/svd.js'></script>
+<script src='../Testing/threex.webar-master/vendor/js-aruco/posit1-patched.js'></script>
+<script src='../Testing/threex.webar-master/vendor/js-aruco/cv.js'></script>
+<script src='../Testing/threex.webar-master/vendor/js-aruco/aruco.js'></script>
+
+<!-- include some extensions -->
+<script src='../Testing/threex.webar-master/threex.webcamgrabbing.js'></script>
+<script src='../Testing/threex.webar-master/threex.imagegrabbing.js'></script>
+<script src='../Testing/threex.webar-master/threex.videograbbing.js'></script> 
+<script src='../Testing/threex.webar-master/threex.jsarucomarker.js'></script>
+
+<body style='margin: 0px; overflow: hidden;'>
+
+<div id='info' style='position: absolute; top: 0px; width: 100%;font-family:arial; font-weight: bolder; padding-top: 5px; text-align:center;'>
+	Source:
+	<a class='webcam' href='javascript:void();'>webcam</a> -
+	<a class='image'  href='javascript:void();'>image</a> -
+	<a class='video'  href='javascript:void();'>video</a>
+</div>
+
+<div id='performanceEnabler' style='position: absolute; top: 0px; right: 0px; text-align: right;background-color:rgba(255,255,255,0.5);padding-left: 10px; padding-bottom: 10px;border-width: 1px;
+  border-style: solid;'>
+	<div style='text-align: center;'>OPTIONS</div>
+	<hr/>
+	<label id='detectMarkersEnabled' title='to enable/disable marker detection in video'>
+		detectMarkers	<input type="checkbox"> 
+	</label>
+	<br/>
+	<label id='markerToObject3DEnabled' title='to enable/disable marker to object3d conversion'>
+		markerToObject3D <input type="checkbox"> 
+	</label>
+	<br/>
+	<label id='webglRenderEnabled' title='to enable/disable webgl rendering'>
+		webglRender	<input type="checkbox"> 
+	</label>
+	<br/>
+	<label id='markerDebugEnabled' title='to enable/disable marker debug'>
+		marker debug	<input type="checkbox"> 
+	</label>
+	<br/><br/>
+	<select id='objSelector' onchange="javascript:toggleObj(this);">
+    </select>
+	
+</div>
+
+<script>
+var markerObject3D;
+var objList = {};
+var lastActivatedObj = null;
+var objCounter = 0;
+function addToObjList(obj){
+        if(lastActivatedObj){
+            lastActivatedObj.visible=false;
+            markerObject3D.remove(obj);
+        }
+        markerObject3D.add(obj);
+        obj.visible = true;
+        var opt = document.createElement('option');
+        opt.innerHTML = obj.name;
+        opt.value = obj.name;
+        objList[obj.name] = obj;
+        document.querySelector('#objSelector').appendChild(opt);  
+        document.querySelector('#objSelector').selectedIndex = objCounter++;
+        lastActivatedObj = obj;
+}
+function toggleObj(element){
+        var obj = objList[element.value];
+        if(lastActivatedObj){
+            lastActivatedObj.visible=false;
+            markerObject3D.remove(obj);
+        }
+        markerObject3D.add(obj);
+        obj.visible = true;
+        lastActivatedObj = obj;
+}
+
+
+
+function webarRun(){
+	
+	//////////////////////////////////////////////////////////////////////////////////
+	//		init Stats for detectMarkers
+	//////////////////////////////////////////////////////////////////////////////////
+	console.log(Stats);
+	var detectMarkersStats = new Stats();
+	detectMarkersStats.setMode( 1 );
+	document.body.appendChild( detectMarkersStats.domElement );
+        detectMarkersStats.domElement.style.position = 'absolute'
+	detectMarkersStats.domElement.style.bottom = '0px'
+	detectMarkersStats.domElement.style.right = '0px'
+
+	var renderStats = new Stats();
+	renderStats.setMode( 0 );
+	document.body.appendChild( renderStats.domElement );
+        renderStats.domElement.style.position = 'absolute'
+	renderStats.domElement.style.bottom = '0px'
+	renderStats.domElement.style.left = '0px'
+
+
+	
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		create a markerObject3D
+	//////////////////////////////////////////////////////////////////////////////////
+	markerObject3D = new THREE.Object3D(); // is above to be global;
+	scene.add(markerObject3D)
+
+
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		add an object in the markerObject3D
+	//////////////////////////////////////////////////////////////////////////////////
+    
+
+
+	// add some debug display
+	;(function(){
+		var geometry = new THREE.PlaneGeometry(1,1,10,10)
+		var material = new THREE.MeshBasicMaterial( {
+			wireframe : true
+		})
+		var mesh = new THREE.Mesh(geometry, material);
+		markerObject3D.add( mesh );
+
+		var mesh = new THREE.AxisHelper
+		markerObject3D.add( mesh );
+	})()
+
+	
+	// add a awesome logo to the scene
+	;(function(){
+		var material = new THREE.SpriteMaterial({
+			map: THREE.ImageUtils.loadTexture( 'images/awesome.png' ),
+		});
+		
+		var object3d = new THREE.Sprite(material );
+		object3d.scale.set( 2, 2, 1 );
+		//markerObject3D.add(object3d)
+		//markerObject3D.remove(object3d);
+		object3d.name = "awesome";
+		
+		addToObjList(object3d);
+		
+		
+		var geometry = new THREE.BoxGeometry(1,1,1)
+		var material = new THREE.MeshBasicMaterial( {
+			wireframe : true
+		})
+		var mesh = new THREE.Mesh(geometry, material);
+		//markerObject3D.add( mesh );
+		mesh.name = "box";
+		addToObjList(mesh);
+		
+		
+		var geometry = new THREE.SphereGeometry( 1, 16, 16 );
+        var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+        var material = new THREE.MeshBasicMaterial( {
+			wireframe : true
+		})
+        var sphere = new THREE.Mesh( geometry, material );
+        sphere.name = "sphere";
+        addToObjList(sphere);
+		
+	})()
+    
+
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		render the whole thing on the page
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// handle window resize
+	window.addEventListener('resize', function(){
+		renderer.setSize( window.innerWidth, window.innerHeight )
+		camera.aspect	= window.innerWidth / window.innerHeight
+		camera.updateProjectionMatrix()
+	}, false)
+
+	
+	// render the scene
+	onRenderFcts.push(function(){	
+		renderStats.begin();
+		if( webglRenderEnabled === true ){
+			renderer.render( scene, camera );
+		}
+		renderStats.end();
+	})
+
+	// run the rendering loop
+	var previousTime = performance.now()
+	requestAnimationFrame(function animate(now){
+
+		requestAnimationFrame( animate );
+
+		onRenderFcts.forEach(function(onRenderFct){
+			onRenderFct(now, now - previousTime);
+		});
+
+		previousTime = now;
+	});
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Do the Augmented Reality part
+	//////////////////////////////////////////////////////////////////////////////////
+
+
+	// init the marker recognition
+	var jsArucoMarker	= new THREEx.JsArucoMarker()
+
+	// if no specific image source is specified, take the image by default
+	if( location.hash === '' )	location.hash = '#image'
+
+	// init the image source grabbing
+	if( location.hash === '#video' ){
+		var videoGrabbing = new THREEx.VideoGrabbing()
+		jsArucoMarker.videoScaleDown = 2;
+	}else if( location.hash === '#webcam' ){
+		var videoGrabbing = new THREEx.WebcamGrabbing()
+		jsArucoMarker.videoScaleDown = 2;
+	}else if( location.hash === '#image' ){
+		var videoGrabbing = new THREEx.ImageGrabbing()
+		jsArucoMarker.videoScaleDown = 10;
+	}else console.assert(false);
+
+	// attach the videoGrabbing.domElement to the body
+        document.body.appendChild(videoGrabbing.domElement);
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Process video source to find markers
+	//////////////////////////////////////////////////////////////////////////////////
+	// set the markerObject3D as visible
+	markerObject3D.visible	= false;
+	// process the image source with the marker recognition
+	onRenderFcts.push(function(){
+		if( detectMarkersEnabled === false )	return
+		
+		var domElement	= videoGrabbing.domElement;
+		detectMarkersStats.begin();
+		var markers	= jsArucoMarker.detectMarkers(domElement);
+		detectMarkersStats.end();
+
+		if( markerToObject3DEnabled === false )	return
+		markerObject3D.visible = false;
+
+		// see if this.markerId has been found
+		markers.forEach(function(marker){
+			// if( marker.id !== 265 )	return
+
+			jsArucoMarker.markerToObject3D(marker, markerObject3D);
+
+			markerObject3D.visible = true;
+		});
+	});
+}
+</script>
+
+
+<script src='CompatibilityTester.js'></script>
+<script src='Initializer.js'></script>
+<script src='script.js'></script>
+
+</body>

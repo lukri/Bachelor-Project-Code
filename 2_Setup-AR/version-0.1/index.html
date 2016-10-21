@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<!-- include three.js -->
+
+
+
+<script src='three.js'></script>
+<script src='../Testing/threex.webar-master/examples/vendor/three.js/examples/js/libs/stats.min.js'></script>
+
+<!-- include js-aruco -->
+<script src='../Testing/threex.webar-master/vendor/js-aruco/svd.js'></script>
+<script src='../Testing/threex.webar-master/vendor/js-aruco/posit1-patched.js'></script>
+<script src='../Testing/threex.webar-master/vendor/js-aruco/cv.js'></script>
+<script src='../Testing/threex.webar-master/vendor/js-aruco/aruco.js'></script>
+
+<!-- include some extensions -->
+<script src='threex.webcamgrabbing.js'></script>
+<script src='threex.imagegrabbing.js'></script>
+<script src='threex.videograbbing.js'></script> 
+<script src='threex.jsarucomarker.js'></script>
+
+<body style='margin: 0px; overflow: hidden;'>
+
+<div id='info' style='position: absolute; top: 0px; width: 100%;font-family:arial; font-weight: bolder; padding-top: 5px; text-align:center;'>
+	Source:
+	<a class='webcam' href='javascript:void();'>webcam</a> -
+	<a class='image'  href='javascript:void();'>image</a> -
+	<a class='video'  href='javascript:void();'>video</a>
+</div>
+
+<div id='performanceEnabler' style='position: absolute; top: 0px; right: 0px; text-align: right;background-color:rgba(255,255,255,0.5);padding-left: 10px; padding-bottom: 10px;border-width: 1px;
+  border-style: solid;'>
+	<div style='text-align: center;'>OPTIONS</div>
+	<hr/>
+	<label id='detectMarkersEnabled' title='to enable/disable marker detection in video'>
+		detectMarkers	<input type="checkbox"> 
+	</label>
+	<br/>
+	<label id='markerToObject3DEnabled' title='to enable/disable marker to object3d conversion'>
+		markerToObject3D <input type="checkbox"> 
+	</label>
+	<br/>
+	<label id='webglRenderEnabled' title='to enable/disable webgl rendering'>
+		webglRender	<input type="checkbox"> 
+	</label>
+	<br/>
+	<label id='markerDebugEnabled' title='to enable/disable marker debug'>
+		marker debug	<input type="checkbox"> 
+	</label>
+	<br/>
+	<label id='binocular' title='to enable/disable marker debug'>
+		use binocular	<input type="checkbox"> 
+	</label>
+	<br/><br/>
+	Choose Object:
+	<select id='objSelector' onchange="javascript:toggleObj(this);">
+    </select>
+	
+</div>
+
+<script src='glMatrix-0.9.5.min.js'></script>
+<script src='Tree.js'></script>
+
+<script src='CompatibilityTester.js'></script>
+<script src='Initializer.js'></script>
+<script src='VirtualContainer.js'></script>
+<script src='script.js'></script>
+
+</body>

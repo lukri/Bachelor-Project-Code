@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<!-- include three.js -->
+
+
+
+<script src='three.js'></script>
+<script src='../Testing/threex.webar-master/examples/vendor/three.js/examples/js/libs/stats.min.js'></script>
+
+<!-- include js-aruco -->
+<script src='../Testing/threex.webar-master/vendor/js-aruco/svd.js'></script>
+<script src='../Testing/threex.webar-master/vendor/js-aruco/posit1-patched.js'></script>
+<script src='../Testing/threex.webar-master/vendor/js-aruco/cv.js'></script>
+<script src='../Testing/threex.webar-master/vendor/js-aruco/aruco.js'></script>
+
+<!-- include some extensions -->
+<script src='threex.webcamgrabbing.js'></script>
+<script src='threex.imagegrabbing.js'></script>
+<script src='threex.videograbbing.js'></script> 
+<script src='threex.jsarucomarker.js'></script>
+
+<body style='margin: 0px; overflow: hidden;'>
+
+<div id='info' style='position: absolute; top: 0px; width: 100%;font-family:arial; font-weight: bolder; padding-top: 5px; text-align:center;'>
+	Source:
+	<a class='webcam' href='javascript:void();'>webcam</a> -
+	<a class='image'  href='javascript:void();'>image</a> -
+	<a class='video'  href='javascript:void();'>video</a>
+</div>
+
+<div id='performanceEnabler' style='position: absolute; top: 0px; right: 0px; text-align: right;background-color:rgba(255,255,255,0.5);padding-left: 10px; padding-bottom: 10px;border-width: 1px;
+  border-style: solid;'>
+	<div style='text-align: center;'>OPTIONS</div>
+	<hr/>
+	<label id='detectMarkersEnabled' title='to enable/disable marker detection in video'>
+		detectMarkers	<input type="checkbox"> 
+	</label>
+	<br/>
+	<label id='markerToObject3DEnabled' title='to enable/disable marker to object3d conversion'>
+		markerToObject3D <input type="checkbox"> 
+	</label>
+	<br/>
+	<label id='webglRenderEnabled' title='to enable/disable webgl rendering'>
+		webglRender	<input type="checkbox"> 
+	</label>
+	<br/>
+	<label id='markerDebugEnabled' title='to enable/disable marker debug'>
+		marker debug	<input type="checkbox"> 
+	</label>
+	<br/><br/>
+	Choose Object:
+	<select id='objSelector' onchange="javascript:toggleObj(this);">
+    </select>
+	
+</div>
+
+<script>
+/*global THREEx*/
+
+// init the marker recognition //belongs to the augmented part
+var jsArucoMarker	= new THREEx.JsArucoMarker(); //is now gloabal;
+jsArucoMarker.debugEnabled = true;
+
+
+
+function toggleObj(element){
+        var objName = element.value;
+        vC.toggleObject(objName);
+}
+
+
+
+function webarRun(){
+	
+	//////////////////////////////////////////////////////////////////////////////////
+	//		init Stats for detectMarkers
+	//////////////////////////////////////////////////////////////////////////////////
+	var detectMarkersStats = new Stats();  //is a three.js lib
+	detectMarkersStats.setMode( 1 );
+	document.body.appendChild( detectMarkersStats.domElement );
+    detectMarkersStats.domElement.style.position = 'absolute'
+	detectMarkersStats.domElement.style.bottom = '0px'
+	detectMarkersStats.domElement.style.right = '0px'
+
+	
+	var renderStats = new Stats();
+	renderStats.setMode( 0 );
+	document.body.appendChild( renderStats.domElement );
+    renderStats.domElement.style.position = 'absolute'
+	renderStats.domElement.style.bottom = '0px'
+	renderStats.domElement.style.left = '0px'
+
+
+	
+	//////////////////////////////////////////////////////////////////////////////////
+	//		render the whole thing on the page
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// handle window resize
+	window.addEventListener('resize', function(){
+		renderer.setSize( window.innerWidth, window.innerHeight )
+		camera.aspect	=  window.innerWidth / window.innerHeight
+		camera.updateProjectionMatrix()
+	}, false)
+
+	var windowWidth;
+	var windowHeight;
+	
+	// render the scene
+	onRenderFcts.push(function(){	
+		renderStats.begin();
+		if( webglRenderEnabled === true ){
+			
+			if ( windowWidth != window.innerWidth || windowHeight != window.innerHeight ) {
+
+					windowWidth  = window.innerWidth;
+					windowHeight = window.innerHeight;
+
+					renderer.setSize ( windowWidth, windowHeight );
+
+			}
+		
+			for ( var ii = 0; ii < views.length; ++ii ) {
+
+				view = views[ii];
+				camera = view.camera;
+
+				view.updateCamera(camera, scene);
+
+				var left   = Math.floor( windowWidth  * view.left );
+				var bottom = Math.floor( windowHeight * view.bottom );
+				var width  = Math.floor( windowWidth  * view.width );
+				var height = Math.floor( windowHeight * view.height );
+				renderer.setViewport( left, bottom, width, height );
+				renderer.setScissor( left, bottom, width, height );
+				renderer.setScissorTest( true );
+				renderer.setClearColor( view.background );
+
+				camera.aspect = width / height;
+				camera.updateProjectionMatrix();
+
+				renderer.render( scene, camera );
+			}
+			
+			
+			
+			renderer.render( scene, camera );
+		}
+		renderStats.end();
+	})
+
+	// run the rendering loop
+	var previousTime = performance.now()
+	requestAnimationFrame(function animate(now){
+
+		requestAnimationFrame( animate );
+
+		onRenderFcts.forEach(function(onRenderFct){
+			onRenderFct(now, now - previousTime);
+		});
+
+		previousTime = now;
+	});
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Do the Augmented Reality part
+	//////////////////////////////////////////////////////////////////////////////////
+
+
+	// init the marker recognition
+	//jsArucoMarker	= new THREEx.JsArucoMarker(); //is now gloabal;
+	//jsArucoMarker.debugEnabled = true;
+
+	// if no specific image source is specified, take the image by default
+	if( location.hash === '' )	location.hash = '#image'
+
+	// init the image source grabbing
+	if( location.hash === '#video' ){
+		var videoGrabbing = new THREEx.VideoGrabbing()
+		jsArucoMarker.videoScaleDown = 2;
+	}else if( location.hash === '#webcam' ){
+		var videoGrabbing = new THREEx.WebcamGrabbing()
+		jsArucoMarker.videoScaleDown = 2;
+	}else if( location.hash === '#image' ){
+		var videoGrabbing = new THREEx.ImageGrabbing()
+		jsArucoMarker.videoScaleDown = 10;
+	}else{
+		console.assert(false, "no mapping hash");
+		return;
+	} 
+	
+	
+	// attach the videoGrabbing.domElement to the body
+        document.body.appendChild(videoGrabbing.domElement);
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Process video source to find markers
+	//////////////////////////////////////////////////////////////////////////////////
+	// set the markerObject3D as visible
+	markerObject3D.visible	= false;
+	// process the image source with the marker recognition
+	onRenderFcts.push(function(){
+		if( detectMarkersEnabled === false )	return
+		
+		var domElement	= videoGrabbing.domElement;
+		detectMarkersStats.begin();
+		var markers	= jsArucoMarker.detectMarkers(domElement);
+		detectMarkersStats.end();
+		
+		if( markerToObject3DEnabled === false )	return
+		markerObject3D.visible = false;
+
+		printXTime("markers",15,markers);
+		
+		// see if this.markerId has been found
+		markers.forEach(function(marker){
+			// if( marker.id !== 265 )	return
+
+			jsArucoMarker.markerToObject3D(marker, markerObject3D);
+
+			markerObject3D.visible = true;
+		});
+	});
+}
+var printedStack = {};
+function printXTime(name,xTimes, printStuff){
+	if(!printedStack[name])
+		printedStack[name] = 0;
+	
+	if(printedStack[name]>=xTimes){
+		return;
+	}else{
+		console.group(name+": "+printedStack[name]);
+		printedStack[name]++;
+		console.log(printStuff);
+		console.groupEnd();
+	}
+}
+
+
+</script>
+
+<script src='glMatrix-0.9.5.min.js'></script>
+<script src='Tree.js'></script>
+
+<script src='CompatibilityTester.js'></script>
+<script src='Initializer.js'></script>
+<script src='VirtualContainer.js'></script>
+<script src='script.js'></script>
+
+</body>

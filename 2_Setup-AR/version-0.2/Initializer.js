@@ -3,29 +3,7 @@
 var Initializer = function(){
     
     
-    this.init = function(){
-    	//////////////////////////////////////////////////////////////////////////////////
-    	//		Handle ui button
-    	//////////////////////////////////////////////////////////////////////////////////
-    	document.querySelector('#info .webcam').addEventListener('click', function(event){
-    		location.hash	= '#webcam';
-    		location.reload();
-    	});
-    
-    	document.querySelector('#info .image').addEventListener('click', function(event){
-    		location.hash	= '#image';
-    		location.reload();
-    	});
-    
-    	document.querySelector('#info .video').addEventListener('click', function(event){
-    		location.hash	= '#video';
-    		location.reload();
-    	});
-
-    	
-    	
-    };
-    
+ 
     
     this.initVirtualEnvironment = function(renderer, scene, camera){
         // init renderer
@@ -38,14 +16,38 @@ var Initializer = function(){
     	
 		var canvasWrap = document.createElement("div");
 		canvasWrap.style.position = "absolute";
+		/*
 		canvasWrap.style.width = "100%";
 		canvasWrap.style.height = "100%";
 		canvasWrap.style.display = "table-cell";
 		canvasWrap.style.verticalAlign = "middle";
 		canvasWrap.style.textAlign = "center";
+		*/
+		canvasWrap.style.top = "50%"; 
+		canvasWrap.style.left = "50%"; 
+		canvasWrap.style.marginRight = "50%"; 
+		canvasWrap.style.transform = "translate(-50%, -50%)"; 
+		canvasWrap.style.maxWidth = "100%"; 
+		canvasWrap.style.maxHeight = "100%"; 
+		canvasWrap.style.width = "auto"; 
+		canvasWrap.style.height = "auto";
+		
+		/*
+		z-index: -1; 
+		position: absolute; 
+		top: 50%; 
+		left: 50%; 
+		margin-right: 50%; 
+		transform: translate(-50%, -50%); 
+		max-width: 100%; 
+		max-height: 100%; 
+		width: auto; 
+		height: auto;
+		*/
+		
 		
     	canvasWrap.appendChild(renderer.domElement)
-    	document.body.appendChild( renderer.domElement );
+    	document.body.appendChild(canvasWrap);
     
     	// init scene and camera
     	var scene = new THREE.Scene();
@@ -68,9 +70,6 @@ var Initializer = function(){
 					}
 				},
 				
-				
-				
-				
 				{
 				    //left eye
 					left: 0,
@@ -79,7 +78,7 @@ var Initializer = function(){
 					height: 1.0,
 					background: new THREE.Color().setRGB( 0.5, 0.5, 0.7 ),
 					backgroundAlpha:0.5,
-					eye: [ -0.5, 0, 2 ],
+					eye: [ 0, 0, 2 ],
 					up: [ 0, 1, 0 ],
 					fov: 40,
 					updateCamera: function ( camera, scene, mouseX, mouseY ) {
@@ -98,7 +97,7 @@ var Initializer = function(){
 					height: 1.0,
 					background: new THREE.Color().setRGB( 0.0, 0.0, 0.0),
 					backgroundAlpha:1,
-					eye: [ 0.5, 0, 2 ],
+					eye: [ 0, 0, 2 ],
 					up: [ 0, 1, 0 ],
 					fov: 40,
 					updateCamera: function ( camera, scene, mouseX, mouseY ) {

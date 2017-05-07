@@ -29,5 +29,19 @@ Problem with x and y access rotation recoction...
 create new input method to test the computation of the 3dposition by given 4 points
 (consolitation of functions in the initialization)
 
+some assumptions:
+same patch + other position -> same rotation? 
+you can see the marker just from the top
 
+
+perspective transformation
+https://en.wikipedia.org/wiki/3D_projection
+
+
+immigrate other librarie
+
+
+
+ToDo:
 change the webcam input, that firefox will support too.
+OptionPanel additions

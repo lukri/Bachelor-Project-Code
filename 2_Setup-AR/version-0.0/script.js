@@ -70,18 +70,21 @@ function renderingLoop(){
 	//		Get Markers / Process video source to find markers
 	//////////////////////////////////////////////////////////////////////////////////
 	
+	jsArucoMarker.videoScaleDown = scaleDownSelection.value;
 	var markers = [];
 	if(detectMarkersEnabledCheckbox.checked){
-	
-		jsArucoMarker.videoScaleDown = scaleDownSelection.value;
-		
 		detectMarkersStats.begin();
 		if(imageData){
 			markers	= jsArucoMarker.detectMarkers(imageData);
 		}
 		detectMarkersStats.end();
+	}
 		
-		
+	if(videoGrabbing.hasFakeMarkers)
+		markers = videoGrabbing.getFakeMarkers();
+	
+	
+	if(markers.length>0){	
 		//???jsArucoMarker.smoothMarker = smoothMarkerBox.checked;???
 		//Debugging and Merging
 		
@@ -94,15 +97,13 @@ function renderingLoop(){
 		if(mergeMarkersBox.checked && markers.length>0){ markers = [markers[markers.length-1]];}	
 	}
 	
-	if(videoGrabbing.hasFakeMarkers)
-		markers = videoGrabbing.getFakeMarkers();
 
-	console.log(markers);
 
     //////////////////////////////////////////////////////////////////////////////////
 	// get3DPosition(); // translate marker, convert into posiiton and rotation
 	//////////////////////////////////////////////////////////////////////////////////
     
+	jsArucoMarker.useAlternativeRotation = altRotBox.checked;
 		
 	jsArucoMarker.mergeTranslation = mergeTranslationBox.checked;
 	jsArucoMarker.mergeRotation = mergeRotationBox.checked;

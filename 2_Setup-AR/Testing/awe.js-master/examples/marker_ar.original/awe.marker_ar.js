@@ -166,11 +166,9 @@
         } catch(e) { /* TODO */ }
         canvas.changed = true;
         var detected_count = detector.detectMarkerLite(raster, threshold);
-        console.log(detected_count);
         var event_data = {};
         for (var i=0; i<detected_count; i++) {
           var id = detector.getIdMarkerData(i);
-          console.log(id);
           var currId = -1;
           if (id.packetLength <= 4) {
             currId = 0;

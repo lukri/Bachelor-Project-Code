@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AWE Stereo click AR demo</title>
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
+<meta charset="utf-8"/>
+<style type="text/css">
+* {
+	margin: 0;
+	padding: 0;
+}
+#container {
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	overflow: hidden;
+}
+#info {
+  position: absolute;
+  z-index: 999;
+  top: 10px;
+  left: 10px;
+  background: #fff;
+  color: #000;
+  padding: 3px;
+}
+
+</style>
+</head>
+<body>
+<div id="info"></div>
+<div id="container"></div>
+<script type="text/javascript" src="../third-party/js/awe-v8.js"></script>
+<script type="text/javascript" src="../third-party/js/awe-loader.js"></script>
+<script type="text/javascript">
+/*global awe*/
+  DEBUG = true;
+  
+  window.addEventListener('load', function() {
+    window.awe.init({
+      device_type: awe.AUTO_DETECT_DEVICE_TYPE,
+      settings: {
+      	container_id: 'container',
+        default_camera_position: { x:0, y:0, z:0 },
+        default_lights:[
+          {
+            id: 'hemi',
+            type: 'hemisphere',
+            color: 0xAAAAAA,
+          },
+        ],
+      },
+      ready: function() {
+
+        awe.util.require([
+          {
+            capabilities: ['gum','webgl'],
+            files: [ 
+              [ '../third-party/js/awe-standard-dependencies.js', 
+                '../third-party/js/awe-standard.js',
+                '../third-party/js/plugins/StereoEffect.js', 
+                '../third-party/js/plugins/VREffect.js',
+                '../third-party/js/plugins/awe.rendering_effects.js', 
+              ]
+            ],
+            success: function() { 
+							awe.setup_scene();
+			        
+			        
+              awe.plugins.view('render_effects').enable();
+			        
+			      
+			        // 'ar' will not do anything if gum is unavailable
+							awe.settings.update({data:{value: 'ar'}, where:{id: 'view_mode'}});
+							// stereo setting will only work if a vr/stereo plugin is available and supported by the device
+							awe.settings.update({data:{value: 'stereo'}, where:{id: 'view_count'}});
+              
+			      },
+          },
+          {
+            capabilities: [],
+            success: function() { 
+		          document.body.innerHTML = '<p>Try this demo in the latest version of Chrome or Firefox on a PC or Android device</p>';
+            },
+          },
+        ]);
+      }
+    });
+  });
+</script>
+</body>
+</html>

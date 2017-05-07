@@ -10,7 +10,7 @@ THREEx.JsArucoMarker = function(){
 
 	this.debugEnabled = false;
 	this.videoScaleDown = 2;
-	this.modelSize = 35;//35.0; // millimeter
+	this.modelSize = 75;//35.0; // millimeter
 
 	var canvasElement = document.createElement('canvas');
 	var context = canvasElement.getContext("2d");
@@ -93,6 +93,7 @@ THREEx.JsArucoMarker = function(){
 			var marker = markers[mI];
 			var corners = [];//marker.corners;
 			
+			
 			// convert corners coordinate	
 			for (var i = 0; i < marker.corners.length; ++ i){
 				corners.push({
@@ -100,6 +101,8 @@ THREEx.JsArucoMarker = function(){
 					y : (canvasElement.height / 2) - marker.corners[i].y,
 				});
 			}
+			
+			
 			
 			// compute the pose from the canvas
 			var posit = new POS.Posit(this.modelSize, canvasElement.width);
@@ -112,7 +115,11 @@ THREEx.JsArucoMarker = function(){
 			//////////////////////////////////////////////////////////////////////////////////
 			//		Translate pose to THREE.Object3D
 			//////////////////////////////////////////////////////////////////////////////////
-			rotation = pose.bestRotation;
+			if(this.useAlternativeRotation){
+				rotation = pose.alternativeRotation;
+			}else{
+				rotation = pose.bestRotation;
+			}
 			rotations.push(rotation);
 			//console.log(rotation);
 			translation = pose.bestTranslation;

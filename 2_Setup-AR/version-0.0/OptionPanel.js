@@ -158,4 +158,9 @@ var OptionPanel = function (options) {
         domElement.style.display = "block";
     };
     
+    
+    this.appendCompleteDomElement = function(completeDomElement){
+        activeGroupDom.appendChild(completeDomElement);
+    };
+    
 };

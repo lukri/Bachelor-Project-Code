@@ -381,10 +381,18 @@
               markers_to_hide.splice(markers_to_hide.indexOf(detected_marker_id), 1);
             }
             try {
-               var poi = awe.pois.view(existing_pois[detected_marker_id]);
-
-              /*global doOnMarkerDetection*/
-              doOnMarkerDetection(poi, marker_transform_matrix);
+              var poi = awe.pois.view(existing_pois[detected_marker_id]),
+                mesh = poi.get_mesh();
+              // console.log(mesh);
+              
+              mesh.matrixAutoUpdate = false;
+              mesh.matrix.setFromArray(Object.asCopy(marker_transform_matrix));
+              mesh.matrixWorldNeedsUpdate = true;
+              
+              doOnMarkerDetection(mesh);
+              
+              
+              
             }
             catch(e){
               console.error(e);
@@ -398,8 +406,8 @@
         });
         
         //this is execute each time
-        /*global doEveryTime*/
-        doEveryTime();
+        var devRot = getDeviceEuler();
+        info.innerHTML = "device:" + "<br>x: "+r2d(devRot.x) + "<br>y: "+r2d(devRot.y) + "<br>z: "+r2d(devRot.z);
         
         
         if (poi_to_hide.length) {
@@ -415,8 +423,9 @@
             where: { id: poi_to_hide }
           });
           
-          /*global doOnMarkerDetectionEnd*/
-          doOnMarkerDetectionEnd();
+          marker.update({visible: false})
+          crosshair.update({visible: false})
+          
         }
         
         // trigger custom event for other user-defined interactions

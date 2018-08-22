@@ -1,0 +1,52 @@
+* {
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: sans-serif;
+    }
+    
+    #container {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      overflow: hidden;
+    }
+    
+    #info {
+      position: absolute;
+      z-index: 999;
+      top: 10px;
+      left: 10px;
+      background: #fff;
+      color: #000;
+      padding: 3px;
+    }
+    
+    #infoBox {
+      position: absolute;
+      z-index: 999;
+      top: 10px;
+      right: 10px;
+      background: #fff;
+      color: #000;
+      padding: 3px;
+    }
+    
+    #loadingInfo {
+      display: none;
+      /*position:absolute;
+  z-index:1000;
+  left:50%;*/
+      top: 40%;
+      font-size: 30px;
+    }
+    
+    #intro {
+      position: absolute;
+      margin: 5px;
+      z-index: 1000;
+    }

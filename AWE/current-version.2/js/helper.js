@@ -1,0 +1,3 @@
+function doOnMarkerDetection(mesh) {
+    
+}

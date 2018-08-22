@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AWE Stereo click AR demo</title>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
+  <meta charset="utf-8" />
+
+  <link rel="stylesheet" href="../third-party/css/pace.theme.css">
+  <link rel="stylesheet" href="style/design.css">
+</head>
+
+<body>
+  <div id="intro">
+    <h1>Hello, thanks for using this application</h1>
+    <br>
+    <h3>Attention</h3><br> This app can only be used with a device providing a camera in combination with eather Chrome or Firefox.<br> Please, make sure, that you are in an environment, where you don't have to care about it. Furthermore you shouldn't have
+    to relly on reactiontime, since the presentet reality may be delayed.<br>
+    <br>
+    <h3>Instruction</h3><br> The playboard will be placed on the recognized marker... Have fun!
+
+    <br><br>
+    <dvi id="buttons" style="display:none">
+      <h3>Options & Start: </h3><br>
+      <label><input type="checkbox" name="fullscreen"/> Fullscreen</label><br><br>
+      <label><input type="checkbox" name="stereo"/> Stereo</label><br><br>
+      ---<br><br>
+      <label><input type="checkbox" name="invertDeviceRot"/> Invert device rotation</label><br><br>
+      <label><input type="checkbox" name="showDeviceDebug"/> Show device debug</label><br><br>
+      ---<br><br>
+      <label><input type="checkbox" name="compareToNative"/> Compare to native</label><br><br>
+      <label><input type="checkbox" name="showMarkerDebug"/> Show marker debug</label><br><br>
+
+      <input type='button' value='Start application with options' onclick='startAWE({createFromElement:this.parentNode});'>
+
+    </dvi>
+  </div>
+  <div id="deviceDebugBox" onclick='calibrateDevice();'></div>
+  <div id="markerDebugBox" onclick='calibrateMarker();'></div>
+  <!--http://stackoverflow.com/questions/1776915/how-to-center-absolutely-positioned-element-in-div-->
+  <div id="loadingInfo">
+    <div style="position: absolute; left: 50%; top:40%;">
+      <div style="position: relative; left: -50%;">
+        Loading...
+      </div>
+    </div>
+  </div>
+  <div id="container"></div>
+  <!--for pace see: http://github.hubspot.com/pace/docs/welcome/-->
+  <script type="text/javascript" src="../third-party/js/pace.min.js"></script>
+  <script type="text/javascript" src="../third-party/js/awe-v8.js"></script>
+  <script type="text/javascript" src="../third-party/js/awe-loader.js"></script>
+  <script type="text/javascript" src='../third-party/js/THREEx.DeviceOrientationState.js'></script>
+  <script type="text/javascript" src='js/helper.js'></script>
+  <script type="text/javascript" src='js/script.js'></script>
+  <script type="text/javascript"></script>
+</body>
+</html>

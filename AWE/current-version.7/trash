@@ -1,0 +1,100 @@
+//test poi
+{ id:'fixed_poi', position: { x:100, y:0, z:-250 }, visible: true }
+			          
+			          
+			          
+ /*
+			        awe.projections.add({ 
+			          id:'marker_projection', 
+								geometry: { shape: 'cube', x:50, y:50, z:50 },
+                position: { x:0, y:0, z:0 },
+                rotation: { x:0, y:0, z:180 },
+			          material:{ type: 'phong', color: 0xFFFFFF }, 
+                texture: { path: 'awe_orange_square.png' },
+                visible: true,
+			        }, { poi_id: 'board_marker_64' });
+			        */			          
+			          
+			          
+			          
+			          
+			           
+			       /*
+			        awe.projections.add({ 
+			          id:'fixed_projection', 
+								geometry: { shape: 'cube', x:50, y:50, z:50 },
+                position: { x:0, y:0, z:0 },
+                rotation: { x:0, y:0, z:0 },
+			          material:{ type: 'phong', color: 0xFFFFFF }, 
+                texture: { path: 'awe_orange_square.png' },
+                visible : 0,
+			        }, { poi_id: 'fixed_poi' });
+            */
+
+
+			       /* 
+			        // animate the fixed POI
+              awe.projections.update({
+                data:{
+                  animation: { duration: 5, persist: 1, repeat: 0 },
+                  rotation: { y: 390 },
+                },
+                where:{ id:"fixed_projection" },
+              });
+
+          */
+          
+           if (awe.plugins.view('geo_ar')) {
+  			        awe.plugins.view('geo_ar').enable();
+  			      }
+  			      
+  			      <input type='button' id='startButton2' value='Start application non Fullscreen' onclick='startAWE({fullscreen:false});' disabled='true'>
+  
+  
+  
+  
+  
+  
+  
+  
+  var info = document.getElementById('info');
+              var object_clicked = false;     
+			        awe.events.add([
+  			        {
+    			        id: '_click',
+    			        register: function(handler){
+      			        window.addEventListener('object_clicked', handler, false);
+    			        },
+    			        unregister: function(handler){
+      			        window.removeEventListener('object_clicked', handler, false);
+      			      },
+      			      handler: function(e) {
+        			      console.log(e);
+        			      lastClickedElement = e.detail;
+        			      object_clicked = true;
+        			      info.innerHTML = 'Clicked projection ID: '+e.detail.projection_id;
+      			      }
+  			        },
+  			        {
+    			        id: '_no_click',
+    			        register: function(handler){
+      			        window.addEventListener('click', handler, false);
+    			        },
+    			        unregister: function(handler){
+      			        window.removeEventListener('click', handler, false);
+      			      },
+      			      handler: function(e) {
+        			      if (object_clicked) {
+          			      object_clicked = false;
+        			      }
+        			      else {
+          			      info.innerHTML = 'scene clicked';
+        			      }
+      			      }
+  			        }
+			        ]);
+			          
+			          
+			          
+			          
+			          

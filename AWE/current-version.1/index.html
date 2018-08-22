@@ -4,6 +4,10 @@
 <title>AWE Stereo click AR demo</title>
 <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
 <meta charset="utf-8"/>
+
+<link rel="stylesheet" href="../third-party/css/pace.theme.css" >
+
+
 <style type="text/css">
 * {
 	margin: 0;
@@ -63,12 +67,19 @@ body {
 <div id="intro">
   <h1>Hello, thanks for using this application</h1>
   <br>
+  <h3>Attention</h3><br>
   This app can only be used with a device providing a camera in combination with eather Chrome or Firefox.<br>
   Please, make sure, that you are in an environment, where you don't have to care about it. Furthermore you shouldn't have to relly on reactiontime, since the presentet reality may be delayed.<br>
+  <br>
+  <h3>Instruction</h3><br>
+  The playboard will be placed on the recognized marker...
+  
+  
   Have fun!
+  
   <br><br>
   <dvi id="buttons" style="display:none">
-    <h2>Options & Start: </h2><br>
+    <h3>Options & Start: </h3><br>
     <label><input type="checkbox" name="fullscreen"/> Fullscreen</label><br><br>
     <label><input type="checkbox" name="stereo"/> Stereo</label><br><br>
     <label><input type="checkbox" name="invertDeviceRot"/> Invert device rotation</label><br><br>
@@ -93,6 +104,8 @@ body {
   </div>
 </div>
 <div id="container"></div>
+<!--for pace see: http://github.hubspot.com/pace/docs/welcome/-->
+<script type="text/javascript" src="../third-party/js/pace.min.js"></script>
 <script type="text/javascript" src="../third-party/js/awe-v8.js"></script>
 <script type="text/javascript" src="../third-party/js/awe-loader.js"></script>
 <script src='../third-party/js/THREEx.DeviceOrientationState.js'></script>
@@ -377,7 +390,7 @@ body {
 			        
 			        
 			        if(options.stereo){
-                  setTimeout(function() { awe.plugins.view('jsartoolkit').unregister(); }, 10000);
+                  setTimeout(function() { awe.plugins.view('jsartoolkit').unregister(); }, 8000);
                   // awe.plugins.view('jsartoolkit').unregister();
                   // awe.plugins.view('jsartoolkit').register();
   		        }else{
@@ -438,6 +451,8 @@ body {
                 { id:'fixed_poi', position: { x:100, y:0, z:-250 }, visible: false},
                 
                 { id:'south', position: { x:0, y:0, z:-200 } },
+                
+                { id:'origin', position: { x:0, y:0, z:0 }, visible: true},
 			         ]);
 			         
 			         
@@ -456,7 +471,7 @@ body {
 			          material:{ type: 'phong', color: 0xFFFFFF }, 
                 rotation:{x:-90, y:0, z:0},
                 visible: true,
-			        }, { poi_id: 'jsartoolkit_marker_64' });
+			        }, { poi_id: 'origin' });
 			         board = awe.projections.view('board_projection');
 			         board.limit = {x: 45, z: 20};
 			          
